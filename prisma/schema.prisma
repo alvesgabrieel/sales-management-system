@@ -16,7 +16,7 @@ model User {
   name      String
   email     String
   password  String
-  type      UserType
+  type      UserType @default(SALESPERSON)
   sales     Sale[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
