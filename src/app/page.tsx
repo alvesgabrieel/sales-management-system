@@ -1,7 +1,7 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -12,17 +12,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { isUsernameValid } from "@/helpers/username-valid";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { isPasswordValid } from "@/helpers/password-valid";
+import { isUsernameValid } from "@/helpers/username-valid";
 
 const formSchema = z.object({
-  name: z
-    .string()
-    .min(3, {
-      message: "O nome deve ter pelo menos 3 caracteres.",
-    }),
+  name: z.string().min(3, {
+    message: "O nome deve ter pelo menos 3 caracteres.",
+  }),
 
   username: z
     .string()
@@ -30,7 +28,8 @@ const formSchema = z.object({
       message: "O nome de usuário deve ter pelo menos 3 caracteres.",
     })
     .refine((value) => isUsernameValid(value), {
-      message: "O nome de usuário deve conter apenas letras, números e underscores.",
+      message:
+        "O nome de usuário deve conter apenas letras, números e underscores.",
     }),
 
   email: z
@@ -53,42 +52,39 @@ const formSchema = z.object({
 });
 
 export default function Home() {
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       username: "",
       email: "",
-      password: ""
+      password: "",
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    
-    console.log(values)
+    console.log(values);
     //Enviar os dados para a API
     const response = await fetch("/api/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(values)
+      body: JSON.stringify(values),
     });
 
-    if(response.ok) {
+    if (response.ok) {
       alert("Usuário criado com sucesso!");
-    }  
-     else {
+    } else {
       const errorData = await response.json();
-      alert(`Erro ao criar o usuário: ${errorData.error}`)
+      alert(`Erro ao criar o usuário: ${errorData.error}`);
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-semibold text-center mb-6">Cadastro</h2>
+    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
+        <h2 className="mb-6 text-center text-2xl font-semibold">Cadastro</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -111,7 +107,10 @@ export default function Home() {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="Digite seu nome de usuário" {...field} />
+                    <Input
+                      placeholder="Digite seu nome de usuário"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -124,7 +123,10 @@ export default function Home() {
                 <FormItem>
                   <FormLabel>E-mail</FormLabel>
                   <FormControl>
-                    <Input placeholder="Digite seu email de usuário" {...field} />
+                    <Input
+                      placeholder="Digite seu email de usuário"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -137,13 +139,21 @@ export default function Home() {
                 <FormItem>
                   <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input placeholder="Digite sua senha" {...field} type="password" />
+                    <Input
+                      placeholder="Digite sua senha"
+                      {...field}
+                      type="password"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={form.formState.isSubmitting} className="w-full mt-4">
+            <Button
+              type="submit"
+              disabled={form.formState.isSubmitting}
+              className="mt-4 w-full"
+            >
               Submeter
             </Button>
           </form>
