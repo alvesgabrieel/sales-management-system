@@ -78,21 +78,40 @@ const SingUp = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    //Enviar os dados para a API
-    const response = await fetch("/api/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
+    try {
+      // Criar usuário
+      const registerResponse = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
 
-    if (response.ok) {
-      alert("Usuário criado com sucesso!");
-    } else {
-      const errorData = await response.json();
-      alert(`Erro ao criar o usuário: ${errorData.error}`);
+      if (!registerResponse.ok) {
+        const errorData = await registerResponse.json();
+        return alert(`Erro ao criar o usuário: ${errorData.error}`);
+      }
+
+      // Realizar login automaticamente
+      const loginResponse = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: values.username,
+          password: values.password,
+        }),
+      });
+
+      if (loginResponse.ok) {
+        const { token } = await loginResponse.json();
+        localStorage.setItem("token", token);
+        alert("Usuário criado e logado com sucesso!");
+        router.push("/dashboard");
+      } else {
+        alert("Usuário criado, mas falha ao fazer login automático.");
+      }
+    } catch (error) {
+      console.error("Erro:", error);
+      alert("Erro ao se conectar com a API.");
     }
   }
 
