@@ -12,9 +12,9 @@ datasource db {
 
 model User {
   id        String   @id @default(uuid())
-  username  String
-  name      String
-  email     String
+  username  String   @unique
+  name      String   
+  email     String   @unique 
   password  String
   type      UserType @default(SALESPERSON)
   sales     Sale[]

@@ -2,6 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -53,6 +55,18 @@ const formSchema = z.object({
 });
 
 const SingUp = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Verifica se o usuário já está logado
+    const token = localStorage.getItem("token");
+
+    // Se estiver logado, redireciona para o dashboard
+    if (token) {
+      router.push("/dashboard");
+    }
+  }, [router]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
