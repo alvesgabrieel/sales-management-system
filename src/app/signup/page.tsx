@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -88,7 +89,7 @@ const SingUp = () => {
 
       if (!registerResponse.ok) {
         const errorData = await registerResponse.json();
-        return alert(`Erro ao criar o usuário: ${errorData.error}`);
+        return toast.error(`Erro ao criar o usuário: ${errorData.error}`);
       }
 
       // Realizar login automaticamente
@@ -104,14 +105,14 @@ const SingUp = () => {
       if (loginResponse.ok) {
         const { token } = await loginResponse.json();
         localStorage.setItem("token", token);
-        alert("Usuário criado e logado com sucesso!");
+        toast.success("Usuário criado e logado com sucesso!");
         router.push("/dashboard");
       } else {
-        alert("Usuário criado, mas falha ao fazer login automático.");
+        toast.warning("Usuário criado, mas falha ao fazer login automático.");
       }
     } catch (error) {
       console.error("Erro:", error);
-      alert("Erro ao se conectar com a API.");
+      toast.error("Ocorreu um erro, tente novamente mais tarde.");
     }
   }
 

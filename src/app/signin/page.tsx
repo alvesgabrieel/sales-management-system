@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner"
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -51,23 +52,23 @@ const SignIn = () => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await fetch("/api/login", {
+      const loginResponse = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
 
-      if (response.ok) {
-        const { token } = await response.json();
+      if (loginResponse.ok) {
+        const { token } = await loginResponse.json();
         localStorage.setItem("token", token);
-        alert("Login bem sucedido!");
-        window.location.href = "/dashboard"; // Redireciona para o dashboard
+        router.push("/dashboard"); // Redireciona para o dashboard
+        toast.success("Login bem sucedido!");
       } else {
-        const errorData = await response.json();
-        alert(`Erro ao fazer login: ${errorData.error}`);
+        const errorData = await loginResponse.json();
+        toast.error(`Erro ao fazer login: ${errorData.error}`);
       }
     } catch (error) {
-      alert("Erro ao se conectar com a API.");
+      toast.error("Ocorreu um erro, tente novamente mais tarde");
       console.log("Erro:", error);
     }
   }
@@ -123,6 +124,7 @@ const SignIn = () => {
             </Button>
           </form>
         </Form>
+        
       </div>
     </div>
   );
